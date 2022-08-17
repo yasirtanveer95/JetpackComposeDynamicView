@@ -33,6 +33,14 @@ class MainActivity : ComponentActivity() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+//                    .paint(
+//                        BitmapPainter(
+//                            BitmapFactory
+//                                .decodeResource(resources, R.drawable.test)
+//                                .asImageBitmap()
+//                        ),
+//                        contentScale = ContentScale.FillBounds
+//                    )
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
