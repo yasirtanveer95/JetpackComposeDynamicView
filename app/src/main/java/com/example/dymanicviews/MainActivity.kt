@@ -125,7 +125,8 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun BuildEditText(index: Int) {
         var textValue by remember { mutableStateOf("") }
-        val showError = mainViewModel.errorList.collectAsState().value.getValue(index)
+        val showError =
+            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
 
         OutlinedTextField(
             value = textValue,
@@ -152,7 +153,8 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun BuildDatePicket(index: Int) {
         var dateValue by remember { mutableStateOf("Select date") }
-        val showError = mainViewModel.errorList.collectAsState().value.getValue(index)
+        val showError =
+            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
 
         Box {
             OutlinedTextField(
@@ -227,7 +229,8 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun BuildTimePicket(index: Int) {
         var timeValue by remember { mutableStateOf("Select Time") }
-        val showError = mainViewModel.errorList.collectAsState().value.getValue(index)
+        val showError =
+            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
 
         Box {
             OutlinedTextField(
@@ -306,7 +309,8 @@ class MainActivity : ComponentActivity() {
         val options = listOf("Transfer", "Bill Payment", "Recharges", "Outing", "Other")
         var expanded by remember { mutableStateOf(false) }
         var selectedOptionText by remember { mutableStateOf(options[0]) }
-        val showError = mainViewModel.errorList.collectAsState().value.getValue(index)
+        val showError =
+            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
 
         ExposedDropdownMenuBox(
             expanded = expanded,
@@ -349,7 +353,8 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun BuildSearchableDropDown(index: Int) {
         val options = mainViewModel.countryList.collectAsState().value
-        val showError = mainViewModel.errorList.collectAsState().value.getValue(index)
+        val showError =
+            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
         var expanded by remember { mutableStateOf(false) }
         var selectedOptionText by remember { mutableStateOf("Select Country") }
         var searchText by remember { mutableStateOf("") }
@@ -417,7 +422,8 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun BuildSlider(index: Int) {
-        val showError = mainViewModel.errorList.collectAsState().value.getValue(index)
+        val showError =
+            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
         var stepsValue by remember { mutableStateOf(.1f) }
 
         Slider(value = stepsValue, steps = 20, onValueChange = {
@@ -434,7 +440,8 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     private fun BuildRangeSlider(index: Int) {
-        val showError = mainViewModel.errorList.collectAsState().value.getValue(index)
+        val showError =
+            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
         var rangStepsValue by remember { mutableStateOf(0.2f..0.6f) }
 
         RangeSlider(values = rangStepsValue, onValueChange = {
@@ -450,7 +457,8 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun BuildCheckBox(index: Int) {
         val options = mainViewModel.countryList.collectAsState().value
-        val showError = mainViewModel.errorList.collectAsState().value.getValue(index)
+        val showError =
+            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
         val selectedOptions by remember { mutableStateOf(arrayListOf<String>()) }
 
         Divider()
@@ -495,7 +503,8 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun BuildRadioGroup(index: Int) {
         val options = mainViewModel.countryList.collectAsState().value
-        val showError = mainViewModel.errorList.collectAsState().value.getValue(index)
+        val showError =
+            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
         var selectedOptionText by remember { mutableStateOf("") }
 
         Divider()

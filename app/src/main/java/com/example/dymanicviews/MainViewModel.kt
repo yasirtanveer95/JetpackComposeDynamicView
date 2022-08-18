@@ -13,9 +13,7 @@ class MainViewModel : ViewModel() {
         "NewZeeland"
     )
     var countryList = MutableStateFlow(actualCountryList)
-    var requiredFieldsList = MutableStateFlow<ArrayList<Int>>(arrayListOf())
-    var errorList = MutableStateFlow<HashMap<Int, Boolean>>(hashMapOf())
-    var answerList = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
+    var viewPropertiesList = MutableStateFlow<HashMap<Int, ViewProperties>>(hashMapOf())
 
     fun searchCountry(searchText: String) {
         if (searchText.isBlank()) {
@@ -28,34 +26,37 @@ class MainViewModel : ViewModel() {
     }
 
     fun addError(position: Int, isError: Boolean) {
-        errorList.value = errorList.value.also {
-            it[position] = isError
+        viewPropertiesList.value = viewPropertiesList.value.also {
+            if (it.containsKey(position))
+                it[position] = it.getValue(position).copy(isError = isError)
+            else
+                it[position] = ViewProperties(isError = isError)
         }
     }
 
     fun addRequiredField(position: Int) {
-        requiredFieldsList.value = requiredFieldsList.value.also {
-            if (it.contains(position).not()) {
-                it.add(position)
-            }
+        viewPropertiesList.value = viewPropertiesList.value.also {
+            it[position] = it.getValue(position).copy(isRequired = true)
         }
     }
 
     fun addValues(position: Int, textValue: String) {
-        answerList.value = answerList.value.also {
-            it[position] = textValue
+        viewPropertiesList.value = viewPropertiesList.value.also {
+            it[position] = it.getValue(position).copy(answerText = textValue)
         }
     }
 
     fun isValid(): Boolean {
-        errorList.value = HashMap(errorList.value).apply {
-            requiredFieldsList.value.forEach {
-                if (answerList.value.containsKey(it).not()) {
-                    put(it, true)
-                }
+        viewPropertiesList.value = HashMap(viewPropertiesList.value).apply {
+            keys.forEach { key ->
+                val itemValue = getValue(key)
+                put(
+                    key,
+                    getValue(key).copy(isError = itemValue.isRequired && itemValue.answerText.isBlank())
+                )
             }
         }
-        return errorList.value.any { it.component2() }.not()
+        return viewPropertiesList.value.any { it.component2().isError }.not()
     }
 
 }
