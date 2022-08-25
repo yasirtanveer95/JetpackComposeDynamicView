@@ -4,9 +4,10 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,9 +24,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.os.LocaleListCompat
 import java.util.*
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +46,42 @@ class MainActivity : ComponentActivity() {
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Divider()
+
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Button(
+                        onClick = {
+                            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                            else
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                        },
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(5.dp),
+                    ) {
+                        Text(text = "Change Mode")
+                    }
+                    Button(
+                        onClick = {
+                            AppCompatDelegate.setApplicationLocales(
+                                if (AppCompatDelegate.getApplicationLocales()
+                                        .toLanguageTags() == "ur-PK"
+                                ) LocaleListCompat.getEmptyLocaleList() else LocaleListCompat.forLanguageTags(
+                                    "ur-PK"
+                                )
+                            )
+                        },
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(5.dp),
+                    ) {
+                        Text(text = "Change Lng")
+                    }
+                }
+
+                Divider()
+
                 repeat(11) {
                     mainViewModel.addError(it, false)
                     when (it) {
