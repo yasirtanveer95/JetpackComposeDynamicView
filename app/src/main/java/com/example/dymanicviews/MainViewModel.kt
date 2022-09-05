@@ -2,6 +2,7 @@ package com.example.dymanicviews
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.util.*
 
 class MainViewModel : ViewModel() {
     private var actualCountryList = arrayListOf(
@@ -55,6 +56,8 @@ class MainViewModel : ViewModel() {
                     getValue(key).copy(isError = itemValue.isRequired && itemValue.answerText.isBlank())
                 )
             }
+            /*Add to Make this Value Unique Every time*/
+            put(-1, ViewProperties(answerText = UUID.randomUUID().toString()))
         }
         return viewPropertiesList.value.any { it.component2().isError }.not()
     }
