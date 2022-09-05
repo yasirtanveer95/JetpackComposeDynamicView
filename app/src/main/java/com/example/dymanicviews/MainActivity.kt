@@ -200,6 +200,7 @@ class MainActivity : AppCompatActivity() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp),
+                readOnly = true,
                 label = {
                     Text(text = "Position $index")
                 },
@@ -276,6 +277,7 @@ class MainActivity : AppCompatActivity() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp),
+                readOnly = true,
                 label = {
                     Text(text = "Position $index")
                 },
