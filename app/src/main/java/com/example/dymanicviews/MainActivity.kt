@@ -25,6 +25,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
+import kotlinx.coroutines.flow.collectLatest
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -164,7 +165,7 @@ class MainActivity : AppCompatActivity() {
     private fun BuildEditText(index: Int) {
         var textValue by remember { mutableStateOf("") }
         val showError =
-            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
+            mainViewModel.viewPropertiesDetails.collectAsState(null).value?.getValue(index)?.isError
 
         OutlinedTextField(
             value = textValue,
@@ -174,7 +175,7 @@ class MainActivity : AppCompatActivity() {
             label = {
                 Text(text = "Position $index")
             },
-            isError = showError,
+            isError = showError == true,
             onValueChange = {
                 mainViewModel.addValues(index, it)
                 textValue = it
@@ -192,7 +193,7 @@ class MainActivity : AppCompatActivity() {
     private fun BuildDatePicket(index: Int) {
         var dateValue by remember { mutableStateOf("Select date") }
         val showError =
-            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
+            mainViewModel.viewPropertiesDetails.collectAsState(null).value?.getValue(index)?.isError
 
         Box {
             OutlinedTextField(
@@ -200,10 +201,11 @@ class MainActivity : AppCompatActivity() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp),
+                readOnly = true,
                 label = {
                     Text(text = "Position $index")
                 },
-                isError = showError,
+                isError = showError == true,
                 onValueChange = { },
                 textStyle = TextStyle(textAlign = TextAlign.Center),
                 colors = ExposedDropdownMenuDefaults.textFieldColors()
@@ -268,7 +270,7 @@ class MainActivity : AppCompatActivity() {
     private fun BuildTimePicket(index: Int) {
         var timeValue by remember { mutableStateOf("Select Time") }
         val showError =
-            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
+            mainViewModel.viewPropertiesDetails.collectAsState(null).value?.getValue(index)?.isError
 
         Box {
             OutlinedTextField(
@@ -276,10 +278,11 @@ class MainActivity : AppCompatActivity() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp),
+                readOnly = true,
                 label = {
                     Text(text = "Position $index")
                 },
-                isError = showError,
+                isError = showError == true,
                 onValueChange = { },
                 textStyle = TextStyle(textAlign = TextAlign.Center),
                 colors = ExposedDropdownMenuDefaults.textFieldColors()
@@ -348,7 +351,7 @@ class MainActivity : AppCompatActivity() {
         var expanded by remember { mutableStateOf(false) }
         var selectedOptionText by remember { mutableStateOf(options[0]) }
         val showError =
-            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
+            mainViewModel.viewPropertiesDetails.collectAsState(null).value?.getValue(index)?.isError
 
         ExposedDropdownMenuBox(
             expanded = expanded,
@@ -360,7 +363,7 @@ class MainActivity : AppCompatActivity() {
                 value = selectedOptionText,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { },
-                isError = showError,
+                isError = showError == true,
                 label = { Text("Purpose") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
@@ -392,7 +395,7 @@ class MainActivity : AppCompatActivity() {
     private fun BuildSearchableDropDown(index: Int) {
         val options = mainViewModel.countryList.collectAsState().value
         val showError =
-            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
+            mainViewModel.viewPropertiesDetails.collectAsState(null).value?.getValue(index)?.isError
         var expanded by remember { mutableStateOf(false) }
         var selectedOptionText by remember { mutableStateOf("Select Country") }
         var searchText by remember { mutableStateOf("") }
@@ -407,7 +410,7 @@ class MainActivity : AppCompatActivity() {
                 value = selectedOptionText,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { },
-                isError = showError,
+                isError = showError == true,
                 label = { Text("Country") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
@@ -461,7 +464,7 @@ class MainActivity : AppCompatActivity() {
     @Composable
     private fun BuildSlider(index: Int) {
         val showError =
-            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
+            mainViewModel.viewPropertiesDetails.collectAsState(null).value?.getValue(index)?.isError
         var stepsValue by remember { mutableStateOf(.1f) }
 
         Slider(value = stepsValue, steps = 20, onValueChange = {
@@ -470,7 +473,7 @@ class MainActivity : AppCompatActivity() {
             mainViewModel.addError(index, false)
         })
 
-        if (showError) {
+        if (showError == true) {
             Toast.makeText(this, "Select $index Value", Toast.LENGTH_SHORT).show()
         }
     }
@@ -479,7 +482,7 @@ class MainActivity : AppCompatActivity() {
     @Composable
     private fun BuildRangeSlider(index: Int) {
         val showError =
-            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
+            mainViewModel.viewPropertiesDetails.collectAsState(null).value?.getValue(index)?.isError
         var rangStepsValue by remember { mutableStateOf(0.2f..0.6f) }
 
         RangeSlider(values = rangStepsValue, onValueChange = {
@@ -487,7 +490,7 @@ class MainActivity : AppCompatActivity() {
             mainViewModel.addValues(index, it.toString())
             mainViewModel.addError(index, false)
         })
-        if (showError) {
+        if (showError == true) {
             Toast.makeText(this, "Select $index Value", Toast.LENGTH_SHORT).show()
         }
     }
@@ -496,7 +499,7 @@ class MainActivity : AppCompatActivity() {
     private fun BuildCheckBox(index: Int) {
         val options = mainViewModel.countryList.collectAsState().value
         val showError =
-            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
+            mainViewModel.viewPropertiesDetails.collectAsState(null).value?.getValue(index)?.isError
         val selectedOptions by remember { mutableStateOf(arrayListOf<String>()) }
 
         Divider()
@@ -532,7 +535,7 @@ class MainActivity : AppCompatActivity() {
         }
         Divider()
 
-        if (showError) {
+        if (showError == true) {
             Toast.makeText(this, "Select $index Value", Toast.LENGTH_SHORT).show()
         }
 
@@ -541,9 +544,18 @@ class MainActivity : AppCompatActivity() {
     @Composable
     private fun BuildRadioGroup(index: Int) {
         val options = mainViewModel.countryList.collectAsState().value
-        val showError =
-            mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
+//        val showError =
+//            mainViewModel.viewPropertiesDetails.collectAsState(null).value?.getValue(index)?.isError
         var selectedOptionText by remember { mutableStateOf("") }
+
+        LaunchedEffect(key1 = Unit) {
+            mainViewModel.viewPropertiesDetails.collectLatest {
+                if (it.getValue(index).isError) {
+                    Toast.makeText(this@MainActivity, "Select $index Value", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
 
         Divider()
         options.forEach { selectionOption ->
@@ -573,10 +585,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         Divider()
-
-        if (showError) {
-            Toast.makeText(this, "Select $index Value", Toast.LENGTH_SHORT).show()
-        }
 
     }
 }

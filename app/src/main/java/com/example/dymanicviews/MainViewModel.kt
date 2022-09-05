@@ -1,7 +1,12 @@
 package com.example.dymanicviews
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
     private var actualCountryList = arrayListOf(
@@ -13,7 +18,9 @@ class MainViewModel : ViewModel() {
         "NewZeeland"
     )
     var countryList = MutableStateFlow(actualCountryList)
-    var viewPropertiesList = MutableStateFlow<HashMap<Int, ViewProperties>>(hashMapOf())
+    var viewPropertiesMap = HashMap<Int, ViewProperties>()
+    private var viewPropertiesFlow = MutableSharedFlow<HashMap<Int, ViewProperties>>()
+    var viewPropertiesDetails = viewPropertiesFlow.asSharedFlow()
 
     fun searchCountry(searchText: String) {
         if (searchText.isBlank()) {
@@ -26,28 +33,31 @@ class MainViewModel : ViewModel() {
     }
 
     fun addError(position: Int, isError: Boolean) {
-        viewPropertiesList.value = viewPropertiesList.value.also {
+        viewPropertiesMap.let {
             if (it.containsKey(position))
                 it[position] = it.getValue(position).copy(isError = isError)
             else
                 it[position] = ViewProperties(isError = isError)
         }
+        viewModelScope.launch {
+            viewPropertiesFlow.emit(viewPropertiesMap)
+        }
     }
 
     fun addRequiredField(position: Int) {
-        viewPropertiesList.value = viewPropertiesList.value.also {
+        viewPropertiesMap.let {
             it[position] = it.getValue(position).copy(isRequired = true)
         }
     }
 
     fun addValues(position: Int, textValue: String) {
-        viewPropertiesList.value = viewPropertiesList.value.also {
+        viewPropertiesMap.let {
             it[position] = it.getValue(position).copy(answerText = textValue)
         }
     }
 
     fun isValid(): Boolean {
-        viewPropertiesList.value = HashMap(viewPropertiesList.value).apply {
+        viewPropertiesMap = HashMap(viewPropertiesMap).apply {
             keys.forEach { key ->
                 val itemValue = getValue(key)
                 put(
@@ -56,7 +66,10 @@ class MainViewModel : ViewModel() {
                 )
             }
         }
-        return viewPropertiesList.value.any { it.component2().isError }.not()
+        viewModelScope.launch(Dispatchers.IO) {
+            viewPropertiesFlow.emit(viewPropertiesMap)
+        }
+        return viewPropertiesMap.any { it.component2().isError }.not()
     }
 
 }
