@@ -25,6 +25,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
+import com.example.dymanicviews.ui.theme.DymanicViewsTheme
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -32,9 +33,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
+            DymanicViewsTheme {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
 //                    .paint(
 //                        BitmapPainter(
 //                            BitmapFactory
@@ -43,99 +45,104 @@ class MainActivity : AppCompatActivity() {
 //                        ),
 //                        contentScale = ContentScale.FillBounds
 //                    )
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Divider()
-
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Button(
-                        onClick = {
-                            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
-                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                            else
-                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                        },
-                        modifier = Modifier
-                            .align(Alignment.CenterStart)
-                            .padding(5.dp),
-                    ) {
-                        Text(text = "Change Mode")
-                    }
-                    Button(
-                        onClick = {
-                            AppCompatDelegate.setApplicationLocales(
-                                if (AppCompatDelegate.getApplicationLocales()
-                                        .toLanguageTags() == "ur-PK"
-                                ) LocaleListCompat.getEmptyLocaleList() else LocaleListCompat.forLanguageTags(
-                                    "ur-PK"
-                                )
-                            )
-                        },
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .padding(5.dp),
-                    ) {
-                        Text(text = "Change Lng")
-                    }
-                }
-
-                Divider()
-
-                repeat(11) {
-                    mainViewModel.addError(it, false)
-                    when (it) {
-                        0 -> BuildTextView(index = it)
-                        1 -> {
-                            BuildEditText(index = it)
-                            mainViewModel.addRequiredField(it)
-                        }
-                        2 -> {
-                            BuildDatePicket(index = it)
-                            mainViewModel.addRequiredField(it)
-                        }
-                        3 -> BuildButtonView(index = it)
-                        4 -> {
-                            BuildTimePicket(index = it)
-                            mainViewModel.addRequiredField(it)
-                        }
-                        5 -> {
-                            BuildDropDown(index = it)
-                            mainViewModel.addRequiredField(it)
-                        }
-                        6 -> {
-                            BuildSearchableDropDown(index = it)
-                            mainViewModel.addRequiredField(it)
-                        }
-                        7 -> {
-                            mainViewModel.addRequiredField(it)
-                            BuildSlider(index = it)
-                        }
-                        8 -> {
-                            mainViewModel.addRequiredField(it)
-                            BuildRangeSlider(index = it)
-                        }
-                        9 -> {
-                            mainViewModel.addRequiredField(it)
-                            BuildCheckBox(index = it)
-                        }
-                        10 -> {
-                            mainViewModel.addRequiredField(it)
-                            BuildRadioGroup(index = it)
-                        }
-                    }
-                }
-                Button(
-                    onClick = {
-                        if (mainViewModel.isValid())
-                            Toast.makeText(this@MainActivity, "Its Valid Data", Toast.LENGTH_SHORT)
-                                .show()
-                    },
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 30.dp),
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text(text = "Click Me")
+                    Divider()
+
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Button(
+                            onClick = {
+                                if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+                                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                                else
+                                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                            },
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                                .padding(5.dp),
+                        ) {
+                            Text(text = "Change Mode")
+                        }
+                        Button(
+                            onClick = {
+                                AppCompatDelegate.setApplicationLocales(
+                                    if (AppCompatDelegate.getApplicationLocales()
+                                            .toLanguageTags() == "ur-PK"
+                                    ) LocaleListCompat.getEmptyLocaleList() else LocaleListCompat.forLanguageTags(
+                                        "ur-PK"
+                                    )
+                                )
+                            },
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .padding(5.dp),
+                        ) {
+                            Text(text = "Change Lng")
+                        }
+                    }
+
+                    Divider()
+
+                    repeat(11) {
+                        mainViewModel.addError(it, false)
+                        when (it) {
+                            0 -> BuildTextView(index = it)
+                            1 -> {
+                                BuildEditText(index = it)
+                                mainViewModel.addRequiredField(it)
+                            }
+                            2 -> {
+                                BuildDatePicket(index = it)
+                                mainViewModel.addRequiredField(it)
+                            }
+                            3 -> BuildButtonView(index = it)
+                            4 -> {
+                                BuildTimePicket(index = it)
+                                mainViewModel.addRequiredField(it)
+                            }
+                            5 -> {
+                                BuildDropDown(index = it)
+                                mainViewModel.addRequiredField(it)
+                            }
+                            6 -> {
+                                BuildSearchableDropDown(index = it)
+                                mainViewModel.addRequiredField(it)
+                            }
+                            7 -> {
+                                mainViewModel.addRequiredField(it)
+                                BuildSlider(index = it)
+                            }
+                            8 -> {
+                                mainViewModel.addRequiredField(it)
+                                BuildRangeSlider(index = it)
+                            }
+                            9 -> {
+                                mainViewModel.addRequiredField(it)
+                                BuildCheckBox(index = it)
+                            }
+                            10 -> {
+                                mainViewModel.addRequiredField(it)
+                                BuildRadioGroup(index = it)
+                            }
+                        }
+                    }
+                    Button(
+                        onClick = {
+                            if (mainViewModel.isValid())
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "Its Valid Data",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                        },
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = 30.dp),
+                    ) {
+                        Text(text = "Click Me")
+                    }
                 }
             }
         }
