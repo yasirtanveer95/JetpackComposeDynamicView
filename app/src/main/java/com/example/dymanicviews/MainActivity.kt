@@ -53,10 +53,10 @@ class MainActivity : AppCompatActivity() {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Button(
                             onClick = {
-                                if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
-                                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                                else
-                                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                                if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) AppCompatDelegate.setDefaultNightMode(
+                                    AppCompatDelegate.MODE_NIGHT_NO
+                                )
+                                else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                             },
                             modifier = Modifier
                                 .align(Alignment.CenterStart)
@@ -83,6 +83,31 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     Divider()
+
+                    val myTextField = EditTextComponent(
+                        hint = "Enter your text here",
+                        textColor = Color.Blue,
+                        backgroundColor = Color.White,
+                        initialValue = "Yasir Tanveer"
+                    )
+// Render the TextField component
+                    myTextField.Render()
+
+                    Button(
+                        onClick = {
+                            if (myTextField.isValid()) Toast.makeText(
+                                this@MainActivity,
+                                myTextField.getTextFieldValue(),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            else myTextField.setError(true)
+                        },
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = 30.dp),
+                    ) {
+                        Text(text = "Submit")
+                    }
 
                     repeat(11) {
                         mainViewModel.addError(it, false)
@@ -129,13 +154,9 @@ class MainActivity : AppCompatActivity() {
                     }
                     Button(
                         onClick = {
-                            if (mainViewModel.isValid())
-                                Toast.makeText(
-                                    this@MainActivity,
-                                    "Its Valid Data",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                            if (mainViewModel.isValid()) Toast.makeText(
+                                this@MainActivity, "Its Valid Data", Toast.LENGTH_SHORT
+                            ).show()
                         },
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
@@ -173,8 +194,7 @@ class MainActivity : AppCompatActivity() {
         val showError =
             mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
 
-        OutlinedTextField(
-            value = textValue,
+        OutlinedTextField(value = textValue,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp),
@@ -190,8 +210,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     mainViewModel.addError(index, false)
                 }
-            }
-        )
+            })
     }
 
     @OptIn(ExperimentalMaterialApi::class)
@@ -222,24 +241,23 @@ class MainActivity : AppCompatActivity() {
                     .matchParentSize()
                     .background(Color.Transparent)
                     .padding(10.dp)
-                    .clickable(
-                        onClick = {
-                            Calendar
-                                .getInstance()
-                                .apply {
-                                    DatePickerDialog(
-                                        this@MainActivity, { _, year, monthOfYear, dayOfMonth ->
-                                            dateValue = "$dayOfMonth/$monthOfYear/$year"
-                                            mainViewModel.addValues(index, dateValue)
-                                            mainViewModel.addError(index, false)
-                                        },
-                                        get(Calendar.YEAR),
-                                        get(Calendar.MONTH),
-                                        get(Calendar.DAY_OF_MONTH)
-                                    ).show()
-                                }
-                        }
-                    )
+                    .clickable(onClick = {
+                        Calendar
+                            .getInstance()
+                            .apply {
+                                DatePickerDialog(
+                                    this@MainActivity,
+                                    { _, year, monthOfYear, dayOfMonth ->
+                                        dateValue = "$dayOfMonth/$monthOfYear/$year"
+                                        mainViewModel.addValues(index, dateValue)
+                                        mainViewModel.addError(index, false)
+                                    },
+                                    get(Calendar.YEAR),
+                                    get(Calendar.MONTH),
+                                    get(Calendar.DAY_OF_MONTH)
+                                ).show()
+                            }
+                    })
             )
         }
 
@@ -299,25 +317,19 @@ class MainActivity : AppCompatActivity() {
                     .matchParentSize()
                     .background(Color.Transparent)
                     .padding(10.dp)
-                    .clickable(
-                        onClick = {
-                            Calendar
-                                .getInstance()
-                                .apply {
-                                    TimePickerDialog(
-                                        this@MainActivity,
-                                        { _, hourOfDay, minute ->
-                                            timeValue = "$hourOfDay : $minute"
-                                            mainViewModel.addValues(index, timeValue)
-                                            mainViewModel.addError(index, false)
-                                        },
-                                        get(Calendar.HOUR_OF_DAY),
-                                        get(Calendar.MINUTE),
-                                        true
-                                    ).show()
-                                }
-                        }
-                    )
+                    .clickable(onClick = {
+                        Calendar
+                            .getInstance()
+                            .apply {
+                                TimePickerDialog(
+                                    this@MainActivity, { _, hourOfDay, minute ->
+                                        timeValue = "$hourOfDay : $minute"
+                                        mainViewModel.addValues(index, timeValue)
+                                        mainViewModel.addError(index, false)
+                                    }, get(Calendar.HOUR_OF_DAY), get(Calendar.MINUTE), true
+                                ).show()
+                            }
+                    })
             )
         }
 
@@ -375,20 +387,16 @@ class MainActivity : AppCompatActivity() {
                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
                 textStyle = TextStyle(textAlign = TextAlign.Center)
             )
-            DropdownMenu(
-                modifier = Modifier.exposedDropdownSize(),
+            DropdownMenu(modifier = Modifier.exposedDropdownSize(),
                 expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
+                onDismissRequest = { expanded = false }) {
                 options.forEach { selectionOption ->
-                    DropdownMenuItem(
-                        onClick = {
-                            selectedOptionText = selectionOption
-                            mainViewModel.addValues(index, selectionOption)
-                            mainViewModel.addError(index, false)
-                            expanded = false
-                        }
-                    ) {
+                    DropdownMenuItem(onClick = {
+                        selectedOptionText = selectionOption
+                        mainViewModel.addValues(index, selectionOption)
+                        mainViewModel.addError(index, false)
+                        expanded = false
+                    }) {
                         Text(text = selectionOption)
                     }
                 }
@@ -422,13 +430,10 @@ class MainActivity : AppCompatActivity() {
                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
                 textStyle = TextStyle(textAlign = TextAlign.Center)
             )
-            DropdownMenu(
-                modifier = Modifier.exposedDropdownSize(),
+            DropdownMenu(modifier = Modifier.exposedDropdownSize(),
                 expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                OutlinedTextField(
-                    value = searchText,
+                onDismissRequest = { expanded = false }) {
+                OutlinedTextField(value = searchText,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(5.dp),
@@ -449,17 +454,14 @@ class MainActivity : AppCompatActivity() {
                     onValueChange = { text ->
                         searchText = text
                         mainViewModel.searchCountry(text)
-                    }
-                )
+                    })
                 options.forEach { selectionOption ->
-                    DropdownMenuItem(
-                        onClick = {
-                            selectedOptionText = selectionOption
-                            mainViewModel.addValues(index, selectionOption)
-                            mainViewModel.addError(index, false)
-                            expanded = false
-                        }
-                    ) {
+                    DropdownMenuItem(onClick = {
+                        selectedOptionText = selectionOption
+                        mainViewModel.addValues(index, selectionOption)
+                        mainViewModel.addError(index, false)
+                        expanded = false
+                    }) {
                         Text(text = selectionOption)
                     }
                 }
@@ -516,26 +518,21 @@ class MainActivity : AppCompatActivity() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                Checkbox(
-                    checked = isChecked,
-                    onCheckedChange = {
-                        isChecked = it
-                        if (it) {
-                            if (selectedOptions.contains(selectionOption).not()) {
-                                selectedOptions.add(selectionOption)
-                            }
-                        } else {
-                            if (selectedOptions.contains(selectionOption)) {
-                                selectedOptions.remove(selectionOption)
-                            }
+                Checkbox(checked = isChecked, onCheckedChange = {
+                    isChecked = it
+                    if (it) {
+                        if (selectedOptions.contains(selectionOption).not()) {
+                            selectedOptions.add(selectionOption)
                         }
-                        mainViewModel.addValues(index, selectedOptions.joinToString(","))
-                        if (selectedOptions.isEmpty())
-                            mainViewModel.addError(index, true)
-                        else
-                            mainViewModel.addError(index, false)
+                    } else {
+                        if (selectedOptions.contains(selectionOption)) {
+                            selectedOptions.remove(selectionOption)
+                        }
                     }
-                )
+                    mainViewModel.addValues(index, selectedOptions.joinToString(","))
+                    if (selectedOptions.isEmpty()) mainViewModel.addError(index, true)
+                    else mainViewModel.addError(index, false)
+                })
                 Text(selectionOption)
             }
         }
@@ -559,25 +556,19 @@ class MainActivity : AppCompatActivity() {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .selectable(
-                        selected = selectionOption == selectedOptionText,
-                        onClick = {
-                            selectedOptionText = selectionOption
-                            mainViewModel.addValues(index, selectionOption)
-                            mainViewModel.addError(index, false)
-                        }
-                    ),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                RadioButton(
-                    selected = selectionOption == selectedOptionText,
-                    onClick = {
+                    .selectable(selected = selectionOption == selectedOptionText, onClick = {
                         selectedOptionText = selectionOption
                         mainViewModel.addValues(index, selectionOption)
                         mainViewModel.addError(index, false)
-                    }
-                )
+                    }),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                RadioButton(selected = selectionOption == selectedOptionText, onClick = {
+                    selectedOptionText = selectionOption
+                    mainViewModel.addValues(index, selectionOption)
+                    mainViewModel.addError(index, false)
+                })
                 Text(selectionOption)
             }
         }
