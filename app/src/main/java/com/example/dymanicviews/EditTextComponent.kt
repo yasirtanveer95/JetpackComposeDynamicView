@@ -4,10 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.lifecycle.MutableLiveData
 
@@ -59,8 +61,19 @@ fun MyTextField(
     isError: Boolean,
     onValueChange: (String) -> Unit
 ) {
-    OutlinedTextField(value = value,
-        onValueChange = onValueChange,
+    val context = LocalContext.current
+    var textValue by rememberSaveable { mutableStateOf(value) }
+    val currentOrientation by remember { mutableStateOf(context.resources.configuration.orientation) }
+
+    LaunchedEffect(currentOrientation) {
+        onValueChange(textValue)
+    }
+
+    OutlinedTextField(value = textValue,
+        onValueChange = {
+            textValue = it
+            onValueChange(it)
+        },
         modifier = Modifier
             .fillMaxWidth()
             .background(backgroundColor),
