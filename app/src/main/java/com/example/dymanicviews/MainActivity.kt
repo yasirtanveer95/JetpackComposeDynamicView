@@ -89,9 +89,9 @@ class MainActivity : AppCompatActivity() {
                         textColor = Color.Blue,
                         backgroundColor = Color.White,
                         initialValue = "Yasir Tanveer"
-                    )
-// Render the TextField component
-                    myTextField.Render()
+                    ).apply {
+                        Render()
+                    }
 
                     Button(
                         onClick = {
@@ -100,7 +100,6 @@ class MainActivity : AppCompatActivity() {
                                 myTextField.getTextFieldValue(),
                                 Toast.LENGTH_SHORT
                             ).show()
-                            else myTextField.setError(true)
                         },
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)

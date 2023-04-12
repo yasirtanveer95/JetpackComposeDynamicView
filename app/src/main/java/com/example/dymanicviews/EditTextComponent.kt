@@ -1,5 +1,6 @@
 package com.example.dymanicviews
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.OutlinedTextField
@@ -20,64 +21,71 @@ class EditTextComponent(
     var backgroundColor: Color = Color.White,
     var initialValue: String = ""
 ) {
-    private val state = MutableLiveData(initialValue)
+    private val fieldValue = MutableLiveData(initialValue)
     private val isError = MutableLiveData(false)
 
-    @Composable
-    fun Render() {
-        MyTextField(hint = hint,
-            textColor = textColor,
-            backgroundColor = backgroundColor,
-            value = state.observeAsState().value ?: "",
-            isError = isError.observeAsState().value ?: false,
-            onValueChange = { newValue ->
-                setError(false)
-                state.value = newValue
-            })
-    }
-
-    fun getTextFieldValue() = state.value
+    fun getTextFieldValue() = fieldValue.value
 
     fun setError(error: Boolean) {
         isError.value = error
     }
 
     fun setValue(newValue: String) {
-        state.value = newValue
+        fieldValue.value = newValue
     }
 
     fun isValid(): Boolean {
-        return state.value.isNullOrBlank().not()
+        return if (fieldValue.value.isNullOrBlank().not()) {
+            setError(false)
+            true
+        } else {
+            Log.e("Field", "Invalid Field Data")
+            setError(true)
+            false
+        }
     }
 
-}
-
-@Composable
-fun MyTextField(
-    hint: String,
-    textColor: Color = Color.Black,
-    backgroundColor: Color = Color.White,
-    value: String,
-    isError: Boolean,
-    onValueChange: (String) -> Unit
-) {
-    val context = LocalContext.current
-    var textValue by rememberSaveable { mutableStateOf(value) }
-    val currentOrientation by remember { mutableStateOf(context.resources.configuration.orientation) }
-
-    LaunchedEffect(currentOrientation) {
-        onValueChange(textValue)
+    @Composable
+    fun Render() {
+        MyTextField(hint = hint,
+            textColor = textColor,
+            backgroundColor = backgroundColor,
+            value = fieldValue.observeAsState().value ?: "",
+            isError = isError.observeAsState().value ?: false,
+            onValueChange = { newValue ->
+                setError(false)
+                fieldValue.value = newValue
+            })
     }
 
-    OutlinedTextField(value = textValue,
-        onValueChange = {
-            textValue = it
-            onValueChange(it)
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(backgroundColor),
-        isError = isError,
-        textStyle = TextStyle(color = textColor),
-        label = { Text(text = hint) })
+    @Composable
+    fun MyTextField(
+        hint: String,
+        textColor: Color = Color.Black,
+        backgroundColor: Color = Color.White,
+        value: String,
+        isError: Boolean,
+        onValueChange: (String) -> Unit
+    ) {
+        val context = LocalContext.current
+        var textValue by rememberSaveable { mutableStateOf(value) }
+        val currentOrientation by remember { mutableStateOf(context.resources.configuration.orientation) }
+
+        LaunchedEffect(currentOrientation) {
+            onValueChange(textValue)
+        }
+
+        OutlinedTextField(value = textValue,
+            onValueChange = {
+                textValue = it
+                onValueChange(it)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(backgroundColor),
+            isError = isError,
+            textStyle = TextStyle(color = textColor),
+            label = { Text(text = hint) })
+    }
+
 }
