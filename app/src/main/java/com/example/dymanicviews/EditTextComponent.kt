@@ -78,7 +78,8 @@ class EditTextComponent(
             onValueChange(textValue)
         }
 
-        OutlinedTextField(value = textValue,
+        OutlinedTextField(
+            value = textValue,
             onValueChange = {
                 textValue = it
                 onValueChange(it)
@@ -88,7 +89,9 @@ class EditTextComponent(
                 .background(backgroundColor),
             isError = isError,
             textStyle = TextStyle(color = textColor),
-            label = { Text(text = hint) })
+            label = { Text(text = hint) },
+            singleLine = true
+        )
     }
 
 }
