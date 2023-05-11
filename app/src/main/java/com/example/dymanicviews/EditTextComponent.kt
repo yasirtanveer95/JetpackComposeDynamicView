@@ -5,14 +5,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.lifecycle.MutableLiveData
 
 
 class EditTextComponent(
@@ -21,8 +24,8 @@ class EditTextComponent(
     var backgroundColor: Color = Color.White,
     var initialValue: String = ""
 ) {
-    private val fieldValue = MutableLiveData(initialValue)
-    private val isError = MutableLiveData(false)
+    private val fieldValue = mutableStateOf(initialValue)
+    private val isError = mutableStateOf(false)
 
     fun getTextFieldValue() = fieldValue.value
 
@@ -35,7 +38,7 @@ class EditTextComponent(
     }
 
     fun isValid(): Boolean {
-        return if (fieldValue.value.isNullOrBlank().not()) {
+        return if (fieldValue.value.isNotBlank()) {
             setError(false)
             true
         } else {
@@ -50,8 +53,8 @@ class EditTextComponent(
         MyTextField(hint = hint,
             textColor = textColor,
             backgroundColor = backgroundColor,
-            value = fieldValue.observeAsState().value ?: "",
-            isError = isError.observeAsState().value ?: false,
+            value = fieldValue.value,
+            isError = isError.value,
             onValueChange = { newValue ->
                 setError(false)
                 fieldValue.value = newValue
