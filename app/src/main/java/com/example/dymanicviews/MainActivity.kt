@@ -84,28 +84,30 @@ class MainActivity : AppCompatActivity() {
 
                     Divider()
 
-                    val myTextField = EditTextComponent(
-                        hint = "Enter your text here",
-                        textColor = Color.Blue,
-                        backgroundColor = Color.White,
-                        initialValue = "Yasir Tanveer"
-                    ).apply {
-                        Render()
-                    }
+                    repeat(3) {
+                        val rememberCustomTextFieldPropertiesState =
+                            rememberCustomTextFieldPropertiesState(initText = "Yasir")
+                        CustomTextFieldComponent(
+                            state = rememberCustomTextFieldPropertiesState,
+                            hint = "Enter$it your text here"
+                        )
+                        if (it == 1) rememberCustomTextFieldPropertiesState.setMaxLength(8)
+                        if (it == 2) rememberCustomTextFieldPropertiesState.setMaxLength(10)
 
-                    Button(
-                        onClick = {
-                            if (myTextField.isValid()) Toast.makeText(
-                                this@MainActivity,
-                                myTextField.getTextFieldValue(),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        },
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(top = 30.dp),
-                    ) {
-                        Text(text = "Submit")
+                        Button(
+                            onClick = {
+                                if (rememberCustomTextFieldPropertiesState.isValid()) Toast.makeText(
+                                    this@MainActivity,
+                                    rememberCustomTextFieldPropertiesState.getTextFieldValue(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            },
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(top = 30.dp),
+                        ) {
+                            Text(text = "Submit")
+                        }
                     }
 
                     repeat(11) {
@@ -116,35 +118,43 @@ class MainActivity : AppCompatActivity() {
                                 BuildEditText(index = it)
                                 mainViewModel.addRequiredField(it)
                             }
+
                             2 -> {
                                 BuildDatePicket(index = it)
                                 mainViewModel.addRequiredField(it)
                             }
+
                             3 -> BuildButtonView(index = it)
                             4 -> {
                                 BuildTimePicket(index = it)
                                 mainViewModel.addRequiredField(it)
                             }
+
                             5 -> {
                                 BuildDropDown(index = it)
                                 mainViewModel.addRequiredField(it)
                             }
+
                             6 -> {
                                 BuildSearchableDropDown(index = it)
                                 mainViewModel.addRequiredField(it)
                             }
+
                             7 -> {
                                 mainViewModel.addRequiredField(it)
                                 BuildSlider(index = it)
                             }
+
                             8 -> {
                                 mainViewModel.addRequiredField(it)
                                 BuildRangeSlider(index = it)
                             }
+
                             9 -> {
                                 mainViewModel.addRequiredField(it)
                                 BuildCheckBox(index = it)
                             }
+
                             10 -> {
                                 mainViewModel.addRequiredField(it)
                                 BuildRadioGroup(index = it)

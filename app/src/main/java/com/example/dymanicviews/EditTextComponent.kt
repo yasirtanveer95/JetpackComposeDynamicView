@@ -1,97 +1,78 @@
 package com.example.dymanicviews
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 
 
-class EditTextComponent(
-    var hint: String,
-    var textColor: Color = Color.Black,
-    var backgroundColor: Color = Color.White,
-    var initialValue: String = ""
-) {
-    private val fieldValue = mutableStateOf(initialValue)
-    private val isError = mutableStateOf(false)
-
-    fun getTextFieldValue() = fieldValue.value
-
-    fun setError(error: Boolean) {
-        isError.value = error
-    }
-
-    fun setValue(newValue: String) {
-        fieldValue.value = newValue
-    }
-
-    fun isValid(): Boolean {
-        return if (fieldValue.value.isNotBlank()) {
-            setError(false)
-            true
-        } else {
-            Log.e("Field", "Invalid Field Data")
-            setError(true)
-            false
-        }
-    }
-
-    @Composable
-    fun Render() {
-        MyTextField(hint = hint,
-            textColor = textColor,
-            backgroundColor = backgroundColor,
-            value = fieldValue.value,
-            isError = isError.value,
-            onValueChange = { newValue ->
-                setError(false)
-                fieldValue.value = newValue
+class CustomTextFieldProperties(initialValue: String = "", hasError: Boolean = false) {
+    companion object {
+        var saver: Saver<CustomTextFieldProperties, *> =
+            listSaver(save = { listOf(it.textValue, it.isError) }, restore = {
+                CustomTextFieldProperties(initialValue = it[0] as String, it[1] as Boolean)
             })
     }
 
-    @Composable
-    fun MyTextField(
-        hint: String,
-        textColor: Color = Color.Black,
-        backgroundColor: Color = Color.White,
-        value: String,
-        isError: Boolean,
-        onValueChange: (String) -> Unit
-    ) {
-        val context = LocalContext.current
-        var textValue by rememberSaveable { mutableStateOf(value) }
-        val currentOrientation by remember { mutableStateOf(context.resources.configuration.orientation) }
+    var textValue by mutableStateOf(initialValue)
+    var isError by mutableStateOf(hasError)
+    var maxLengthAllowed by mutableStateOf(0)
 
-        LaunchedEffect(currentOrientation) {
-            onValueChange(textValue)
-        }
+    fun getTextFieldValue() = textValue
 
-        OutlinedTextField(
-            value = textValue,
-            onValueChange = {
-                textValue = it
-                onValueChange(it)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(backgroundColor),
-            isError = isError,
-            textStyle = TextStyle(color = textColor),
-            label = { Text(text = hint) },
-            singleLine = true
-        )
+    fun setTextFieldError(error: Boolean) {
+        isError = error
     }
 
+    fun setValue(newTextValue: String) {
+        textValue = newTextValue
+    }
+
+    fun setMaxLength(maxLength: Int) {
+        maxLengthAllowed = maxLength
+    }
+
+    fun isValid(): Boolean {
+        return if (textValue.isNotBlank()) {
+            setTextFieldError(false)
+            true
+        } else {
+            Log.e("Field", "Invalid Field Data")
+            setTextFieldError(true)
+            false
+        }
+    }
+}
+
+@Composable
+fun CustomTextFieldComponent(state: CustomTextFieldProperties, hint: String = "") {
+
+    OutlinedTextField(
+        value = state.getTextFieldValue(),
+        onValueChange = {
+            if (state.maxLengthAllowed == 0 || it.length <= state.maxLengthAllowed) {
+                state.setValue(it)
+                state.setTextFieldError(state.isValid().not())
+            }
+        },
+        modifier = Modifier.fillMaxWidth(),
+        isError = state.isError,
+        label = { Text(text = hint) },
+        singleLine = true
+    )
+}
+
+@Composable
+fun rememberCustomTextFieldPropertiesState(initText: String = ""): CustomTextFieldProperties {
+    return rememberSaveable(saver = CustomTextFieldProperties.saver) {
+        CustomTextFieldProperties(initText)
+    }
 }
