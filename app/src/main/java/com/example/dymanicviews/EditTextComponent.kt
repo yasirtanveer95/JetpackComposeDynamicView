@@ -2,6 +2,7 @@ package com.example.dymanicviews
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +13,8 @@ import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 
 
 class CustomTextFieldProperties(initialValue: String = "", hasError: Boolean = false) {
@@ -26,6 +29,7 @@ class CustomTextFieldProperties(initialValue: String = "", hasError: Boolean = f
     var isError by mutableStateOf(hasError)
     var maxLengthAllowed by mutableStateOf(0)
     var isEnabled by mutableStateOf(true)
+    var keyboardType by mutableStateOf(0)
 
     fun getTextFieldValue() = textValue
 
@@ -43,6 +47,10 @@ class CustomTextFieldProperties(initialValue: String = "", hasError: Boolean = f
 
     fun setMaxLength(maxLength: Int) {
         maxLengthAllowed = maxLength
+    }
+
+    fun setTextFieldKeyboardType(type: Int) {
+        keyboardType = type
     }
 
     fun isValid(): Boolean {
@@ -71,6 +79,13 @@ fun CustomTextFieldComponent(state: CustomTextFieldProperties, hint: String = ""
         modifier = Modifier.fillMaxWidth(),
         isError = state.isError,
         enabled = state.isEnabled,
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Characters,
+            keyboardType = when (state.keyboardType) {
+                1 -> KeyboardType.Number
+                else -> KeyboardType.Text
+            }
+        ),
         label = { Text(text = hint) },
         singleLine = true
     )

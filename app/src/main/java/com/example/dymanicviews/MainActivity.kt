@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import com.example.dymanicviews.ui.theme.DymanicViewsTheme
+import kotlinx.coroutines.launch
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -92,7 +93,12 @@ class MainActivity : AppCompatActivity() {
                             hint = "Enter$it your text here"
                         )
                         if (it == 1) rememberCustomTextFieldPropertiesState.setMaxLength(8)
-                        if (it == 2) rememberCustomTextFieldPropertiesState.setMaxLength(10)
+                        if (it == 2) {
+                            val coroutineScope = rememberCoroutineScope()
+                            coroutineScope.launch {
+                                rememberCustomTextFieldPropertiesState.setTextFieldKeyboardType(1)
+                            }
+                        }
 
                         Button(
                             onClick = {
