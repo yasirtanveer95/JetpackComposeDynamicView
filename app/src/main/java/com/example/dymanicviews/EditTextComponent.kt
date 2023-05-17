@@ -25,6 +25,7 @@ class CustomTextFieldProperties(initialValue: String = "", hasError: Boolean = f
     var textValue by mutableStateOf(initialValue)
     var isError by mutableStateOf(hasError)
     var maxLengthAllowed by mutableStateOf(0)
+    var isEnabled by mutableStateOf(true)
 
     fun getTextFieldValue() = textValue
 
@@ -34,6 +35,10 @@ class CustomTextFieldProperties(initialValue: String = "", hasError: Boolean = f
 
     fun setValue(newTextValue: String) {
         textValue = newTextValue
+    }
+
+    fun setTextFieldEnable(isEnable: Boolean) {
+        isEnabled = isEnable
     }
 
     fun setMaxLength(maxLength: Int) {
@@ -65,6 +70,7 @@ fun CustomTextFieldComponent(state: CustomTextFieldProperties, hint: String = ""
         },
         modifier = Modifier.fillMaxWidth(),
         isError = state.isError,
+        enabled = state.isEnabled,
         label = { Text(text = hint) },
         singleLine = true
     )
