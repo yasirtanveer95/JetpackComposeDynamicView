@@ -41,6 +41,7 @@ class CustomTextFieldProperties(initialValue: String = "", hasError: Boolean = f
         textValue = newTextValue
     }
 
+    /* Use coroutineScope to Update Value this will reflect intimidatingly value*/
     fun setTextFieldEnable(isEnable: Boolean) {
         isEnabled = isEnable
     }
@@ -49,6 +50,7 @@ class CustomTextFieldProperties(initialValue: String = "", hasError: Boolean = f
         maxLengthAllowed = maxLength
     }
 
+    /* Use coroutineScope to Update Value this will reflect intimidatingly value*/
     fun setTextFieldKeyboardType(type: Int) {
         keyboardType = type
     }
