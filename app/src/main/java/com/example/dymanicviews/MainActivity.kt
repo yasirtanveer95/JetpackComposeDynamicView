@@ -92,12 +92,23 @@ class MainActivity : AppCompatActivity() {
                             state = rememberCustomTextFieldPropertiesState,
                             hint = "Enter$it your text here"
                         )
-                        if (it == 1) rememberCustomTextFieldPropertiesState.setMaxLength(8)
-                        if (it == 2) {
+                        if (it == 1) {
+                            rememberCustomTextFieldPropertiesState.addValidation(
+                                TextFieldValidation(ValidationType.Required.value, "Field Required")
+                            )
+                            rememberCustomTextFieldPropertiesState.setMaxLength(8)
                             val coroutineScope = rememberCoroutineScope()
                             coroutineScope.launch {
                                 rememberCustomTextFieldPropertiesState.setTextFieldKeyboardType(1)
                             }
+                        }
+                        if (it == 2) {
+                            rememberCustomTextFieldPropertiesState.addValidation(
+                                TextFieldValidation(ValidationType.Required.value, "Field Required")
+                            )
+                            rememberCustomTextFieldPropertiesState.addValidation(
+                                TextFieldValidation(ValidationType.Email.value, "Enter Valid Email")
+                            )
                         }
 
                         Button(
