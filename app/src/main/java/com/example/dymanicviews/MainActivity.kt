@@ -519,7 +519,7 @@ class MainActivity : AppCompatActivity() {
             mainViewModel.viewPropertiesList.collectAsState().value.getValue(index).isError
         var rangStepsValue by remember { mutableStateOf(0.2f..0.6f) }
 
-        RangeSlider(values = rangStepsValue, onValueChange = {
+        RangeSlider(value = rangStepsValue, onValueChange = {
             rangStepsValue = it
             mainViewModel.addValues(index, it.toString())
             mainViewModel.addError(index, false)
